@@ -64,5 +64,5 @@ No Linux / macOS:
 
 * mvnw e mvnw.cmd: Scripts do Maven Wrapper para execução padronizada sem precisar instalar o Maven localmente.
 
-✒️ Autores
+## ✒️ Autores
 Desenvolvido por Wendson Kauã, Daniel, Caterine, Gabriel e Felipe.
