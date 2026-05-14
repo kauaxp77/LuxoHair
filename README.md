@@ -48,10 +48,11 @@ No Windows:
 ```bash
 DOS
 mvnw.cmd spring-boot:run
+```
 No Linux / macOS:
-
 ```bash
 ./mvnw spring-boot:run
+```
 ## 📁 Estrutura do Projeto
 
 * src/main/java/com/example/ProjetoBack/: Contém o código-fonte principal da aplicação Java.
