@@ -29,7 +29,8 @@ Antes de executar o projeto localmente, certifique-se de ter instalado em sua m�
    ```bash
    git clone [https://github.com/seu-usuario/ProjetoBack.git](https://github.com/seu-usuario/ProjetoBack.git)
    cd ProjetoBack
-Configure o Banco de Dados:
+   
+2. **Configure o Banco de Dados:**
 Abra o arquivo src/main/resources/application.properties e adicione as configurações de conexão com o seu banco PostgreSQL (URL, usuário e senha).
 Exemplo:
 
@@ -39,7 +40,8 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/nome_do_banco
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 spring.jpa.hibernate.ddl-auto=update
-Execute a aplicação:
+
+3. **Execute a aplicação:**
 Utilize o Maven Wrapper que já vem no projeto para baixar as dependências e iniciar o servidor.
 
 No Windows:
@@ -50,16 +52,17 @@ No Linux / macOS:
 
 Bash
 ./mvnw spring-boot:run
-📁 Estrutura do Projeto
-src/main/java/com/example/ProjetoBack/: Contém o código-fonte principal da aplicação Java.
+## 📁 Estrutura do Projeto
 
-src/main/resources/: Contém os arquivos de configuração, como o application.properties.
+* **src/main/java/com/example/ProjetoBack/: Contém o código-fonte principal da aplicação Java.
 
-src/test/: Diretório reservado para os testes unitários e de integração.
+* **src/main/resources/: Contém os arquivos de configuração, como o application.properties.
 
-pom.xml: Arquivo de configuração do Maven, onde estão listadas todas as dependências e plugins.
+* **src/test/: Diretório reservado para os testes unitários e de integração.
 
-mvnw e mvnw.cmd: Scripts do Maven Wrapper para execução padronizada sem precisar instalar o Maven localmente.
+* **pom.xml: Arquivo de configuração do Maven, onde estão listadas todas as dependências e plugins.
+
+* **mvnw e mvnw.cmd: Scripts do Maven Wrapper para execução padronizada sem precisar instalar o Maven localmente.
 
 ✒️ Autores
 Desenvolvido por Wendson Kauã, Daniel, Caterine, Gabriel e Felipe.
