@@ -46,7 +46,6 @@ Utilize o Maven Wrapper que já vem no projeto para baixar as dependências e in
 
 No Windows:
 ```bash
-DOS
 mvnw.cmd spring-boot:run
 ```
 No Linux / macOS:
