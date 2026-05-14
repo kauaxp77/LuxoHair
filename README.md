@@ -45,24 +45,24 @@ spring.jpa.hibernate.ddl-auto=update
 Utilize o Maven Wrapper que já vem no projeto para baixar as dependências e iniciar o servidor.
 
 No Windows:
-
+```bash
 DOS
 mvnw.cmd spring-boot:run
 No Linux / macOS:
 
-Bash
+```bash
 ./mvnw spring-boot:run
 ## 📁 Estrutura do Projeto
 
-* **src/main/java/com/example/ProjetoBack/: Contém o código-fonte principal da aplicação Java.
+* src/main/java/com/example/ProjetoBack/: Contém o código-fonte principal da aplicação Java.
 
-* **src/main/resources/: Contém os arquivos de configuração, como o application.properties.
+* src/main/resources/: Contém os arquivos de configuração, como o application.properties.
 
-* **src/test/: Diretório reservado para os testes unitários e de integração.
+* src/test/: Diretório reservado para os testes unitários e de integração.
 
-* **pom.xml: Arquivo de configuração do Maven, onde estão listadas todas as dependências e plugins.
+* pom.xml: Arquivo de configuração do Maven, onde estão listadas todas as dependências e plugins.
 
-* **mvnw e mvnw.cmd: Scripts do Maven Wrapper para execução padronizada sem precisar instalar o Maven localmente.
+* mvnw e mvnw.cmd: Scripts do Maven Wrapper para execução padronizada sem precisar instalar o Maven localmente.
 
 ✒️ Autores
 Desenvolvido por Wendson Kauã, Daniel, Caterine, Gabriel e Felipe.
