@@ -71,7 +71,7 @@ A interface web estará disponível em: http://localhost:8080
 
 A API REST estará disponível sob o mesmo endereço, nos seus respectivos endpoints.
 ```
-```
+
 ### 2. Executando Localmente
 Este método é útil para desenvolvimento e depuração na sua IDE.
 
@@ -83,7 +83,7 @@ Certifique-se de ter uma instância do PostgreSQL rodando localmente.
 
 Abra o arquivo ProjetoBack/src/main/resources/application.properties e ajuste as seguintes linhas com suas credenciais:
 ```
-```Properties
+Properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/nome_do_seu_banco
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
