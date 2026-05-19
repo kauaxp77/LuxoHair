@@ -24,7 +24,9 @@
         </div>
 
         <!-- O th:action aponta para a URL que o Spring Security processa -->
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{/perform_login}" method="post">
+            <!-- Adicionado campo para o token CSRF -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="mb-4">
                 <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Email ou Usuário</label>
                 <input type="text" id="username" name="username" placeholder="seuemail@exemplo.com"
