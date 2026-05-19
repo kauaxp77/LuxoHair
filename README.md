@@ -52,12 +52,10 @@ Este é o método mais simples e rápido, pois o Docker cuida de todo o ambiente
 1. Clone o repositório:
 ```bash
 git clone [https://github.com/kauaxp77/ProjetoBack.git](https://github.com/kauaxp77/ProjetoBack.git)
-Navegue até a pasta do projeto:
 ```
 2. Navegue até a pasta do projeto:
 ```Bash
 cd ProjetoBack
-Suba os contêineres:
 ```
 3. Suba os contêineres 
 ```Bash
