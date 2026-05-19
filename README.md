@@ -62,13 +62,13 @@ Suba os contêineres:
 Bash
 docker-compose up --build
 O comando --build garante que a imagem da sua aplicação seja construída com as últimas alterações.
-```
+
 Acesse a aplicação:
 
 A interface web estará disponível em: http://localhost:8080
 
 A API REST estará disponível sob o mesmo endereço, nos seus respectivos endpoints.
-
+```
 2. Executando Localmente
 Este método é útil para desenvolvimento e depuração na sua IDE.
 
@@ -89,7 +89,7 @@ Compile e execute a aplicação com Maven:
 Bash
 mvn spring-boot:run
 Ou, execute a classe ProjetoBackApplication.java diretamente da sua IDE.
-```
+
 🔐 Acesso ao Sistema
 Para acessar o dashboard administrativo, utilize as credenciais padrão em memória:
 
