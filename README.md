@@ -101,6 +101,7 @@ Para acessar o dashboard administrativo, utilize as credenciais padrão em memó
 Usuário: admin@test.com
 
 Senha: password
+```
 # 📂 Estrutura do Projeto
 A estrutura de diretórios foi organizada para seguir as melhores práticas de projetos Spring Boot:
 
@@ -135,7 +136,7 @@ POST /servicos: Adiciona um novo serviço.
 GET /agendamentos: Lista todos os agendamentos.
 
 POST /agendamentos: Adiciona um novo agendamento.
-
+```
 # 🔮 Próximos Passos
 [ ] Conectar o dashboard aos dados reais do banco de dados.
 
