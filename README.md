@@ -69,7 +69,7 @@ A interface web estará disponível em: http://localhost:8080
 
 A API REST estará disponível sob o mesmo endereço, nos seus respectivos endpoints.
 ```
-2. Executando Localmente
+### 2. Executando Localmente
 Este método é útil para desenvolvimento e depuração na sua IDE.
 
 Clone o repositório e navegue até a pasta do projeto (passos 1 e 2 acima).
