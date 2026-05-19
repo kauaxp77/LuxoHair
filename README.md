@@ -54,20 +54,23 @@ Este é o método mais simples e rápido, pois o Docker cuida de todo o ambiente
 git clone [https://github.com/kauaxp77/ProjetoBack.git](https://github.com/kauaxp77/ProjetoBack.git)
 Navegue até a pasta do projeto:
 ```
-
-Bash
+2. Navegue até a pasta do projeto:
+```Bash
 cd ProjetoBack
 Suba os contêineres:
 ```
-Bash
+3. Suba os contêineres 
+```Bash
 docker-compose up --build
+```
 O comando --build garante que a imagem da sua aplicação seja construída com as últimas alterações.
 
-Acesse a aplicação:
+4. Acesse a aplicação:
 
 A interface web estará disponível em: http://localhost:8080
 
 A API REST estará disponível sob o mesmo endereço, nos seus respectivos endpoints.
+```
 ```
 ### 2. Executando Localmente
 Este método é útil para desenvolvimento e depuração na sua IDE.
@@ -79,15 +82,17 @@ Configure o Banco de Dados:
 Certifique-se de ter uma instância do PostgreSQL rodando localmente.
 
 Abra o arquivo ProjetoBack/src/main/resources/application.properties e ajuste as seguintes linhas com suas credenciais:
-
-Properties
+```
+```Properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/nome_do_seu_banco
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
+```
 Compile e execute a aplicação com Maven:
 
-Bash
+```Bash
 mvn spring-boot:run
+```
 Ou, execute a classe ProjetoBackApplication.java diretamente da sua IDE.
 
 🔐 Acesso ao Sistema
