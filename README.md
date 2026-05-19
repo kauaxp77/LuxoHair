@@ -101,7 +101,6 @@ Para acessar o dashboard administrativo, utilize as credenciais padrão em memó
 Usuário: admin@test.com
 
 Senha: password
-```
 # 📂 Estrutura do Projeto
 A estrutura de diretórios foi organizada para seguir as melhores práticas de projetos Spring Boot:
 
@@ -145,3 +144,5 @@ POST /agendamentos: Adiciona um novo agendamento.
 [ ] Substituir o usuário em memória por um sistema de usuários no banco de dados.
 
 [ ] Adicionar testes unitários e de integração.
+## ✒️ Autores
+Desenvolvido por Wendson Kauã, Daniel, Caterine, Gabriel e Felipe.
