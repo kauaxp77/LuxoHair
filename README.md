@@ -57,7 +57,7 @@ git clone [https://github.com/kauaxp77/ProjetoBack.git](https://github.com/kauax
 ```Bash
 cd ProjetoBack
 ```
-3. Suba os contêineres 
+3. Suba os contêineres
 ```Bash
 docker-compose up --build
 ```
@@ -65,7 +65,7 @@ O comando --build garante que a imagem da sua aplicação seja construída com a
 
 4. Acesse a aplicação:
 
-A interface web estará disponível em: http://localhost:8080
+A interface web estará disponível em: http://localhost:8082/login
 
 A API REST estará disponível sob o mesmo endereço, nos seus respectivos endpoints.
 ```
@@ -81,7 +81,6 @@ Certifique-se de ter uma instância do PostgreSQL rodando localmente.
 
 Abra o arquivo ProjetoBack/src/main/resources/application.properties e ajuste as seguintes linhas com suas credenciais:
 ```
-Properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/nome_do_seu_banco
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
