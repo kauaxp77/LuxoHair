@@ -1,12 +1,18 @@
 package com.example.ProjetoBack.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Data
 @Entity
+
 public class Agendamento {
 
     @Id
