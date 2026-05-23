@@ -18,7 +18,7 @@ public class AdminController {
     private final ServicoServices servicoServices;
 
     private final ClienteServices clienteServices;
-    @GetMapping
+    @PostMapping("/servicos")
     ResponseEntity<Servico> adicionarServico(@RequestBody Servico servico){
         Servico servico1 = servicoServices.adicionarServico(servico);
 
@@ -34,13 +34,13 @@ public class AdminController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @PostMapping
+    @GetMapping("/servicos")
     ResponseEntity<List<Servico>> listarServico(){
         return ResponseEntity.ok(servicoServices.listar());
     }
 
 
-    @GetMapping
+    @PostMapping("/clientes")
     ResponseEntity<Cliente> adicionarCliente(@RequestBody Cliente cliente){
         Cliente cliente1 = clienteServices.adicionarCliente(cliente);
 
@@ -57,8 +57,8 @@ public class AdminController {
 
     }
 
-    @PostMapping
-    ResponseEntity<List<Cliente> listar(){
+    @GetMapping("/clientes")
+    ResponseEntity<List<Cliente>> listar(){
         return ResponseEntity.ok(clienteServices.listar());
     }
 
