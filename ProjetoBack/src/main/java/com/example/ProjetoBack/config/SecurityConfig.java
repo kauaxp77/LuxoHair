@@ -20,16 +20,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
+                // Permite acesso público à página de login, à URL de processamento do login e aos recursos estáticos
+                .requestMatchers("/login", "/perform_login", "/css/**", "/js/**", "/images/**").permitAll()
+                // Qualquer outra requisição (incluindo /dashboard) precisa de autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
+                // Define a página de login personalizada
                 .loginPage("/login")
-                .loginProcessingUrl("/login")
+                // Define a URL para onde o formulário de login será enviado (POST)
+                .loginProcessingUrl("/perform_login")
+                // Redireciona para /dashboard após o login bem-sucedido
                 .defaultSuccessUrl("/dashboard", true)
-                .permitAll()
+                // A permissão para a página de login já foi concedida acima
             )
             .logout(logout -> logout
+                // Configura a URL de logout e permite acesso a todos
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
                 .permitAll()
             );
 
