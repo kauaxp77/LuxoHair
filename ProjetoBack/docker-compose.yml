@@ -1,7 +1,5 @@
-version: '3.8'
 
 services:
-  # Container do Banco de Dados
   db:
     image: postgres:15-alpine
     container_name: postgres-db
@@ -14,24 +12,20 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  # Container da Aplicação Spring Boot
   app:
     build: .
     container_name: spring-app
     restart: always
     ports:
-      - "8080:8080"
+
+      - "8082:8087"
     depends_on:
       - db
     environment:
-      # O Spring Boot vai ler essas variáveis de ambiente e sobrescrever o application.properties!
-      # Note que a URL usa "db" em vez de "localhost" para achar o container do PostgreSQL
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/agendamentos_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
-# Volume para os dados do banco não sumirem quando o container desligar
 volumes:
   postgres_data:
