@@ -36,5 +36,9 @@ services:
 
 # Volume para os dados do banco não sumirem quando o container desligar
 volumes:
+<<<<<<< HEAD
   postgres_data:
     name: postgres_data_global
+=======
+  postgres_data:
+>>>>>>> 0d76a73c56544c4fa053745bbed71e2df4ff5901
