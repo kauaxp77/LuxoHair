@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Agendamentos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome (para ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+    <div class="flex md:flex-row-reverse flex-wrap">
+
+        <!-- Área Principal -->
+        <div class="w-full md:w-4/5 bg-gray-100">
+            <div class="container bg-gray-100 pt-16 px-6 mx-auto">
+
+                <!-- Título -->
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+
+                <!-- Cards de Métricas -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Agendamentos Hoje</p>
+                            <p class="text-2xl font-bold text-gray-800">Variavel agendamentos dia</p>
+                        </div>
+                        <i class="fas fa-calendar-day text-4xl text-blue-500"></i>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Clientes Cadastrados</p>
+                            <p class="text-2xl font-bold text-gray-800">Var total clientes</p>
+                        </div>
+                        <i class="fas fa-users text-4xl text-green-500"></i>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Serviços Pendentes</p>
+                            <p class="text-2xl font-bold text-gray-800">var servicos nao completados</p>
+                        </div>
+                        <i class="fas fa-clock text-4xl text-yellow-500"></i>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Faturamento Mês</p>
+                            <p class="text-2xl font-bold text-gray-800">var fat</p>
+                        </div>
+                        <i class="fas fa-dollar-sign text-4xl text-red-500"></i>
+                    </div>
+                </div>
+
+                <!-- Tabela de Últimos Agendamentos -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Últimos Agendamentos</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-800 text-white">
+                                <tr>
+                                    <th class="w-1/12 text-left py-3 px-4 uppercase font-semibold text-sm">ID</th>
+                                    <th class="w-2/12 text-left py-3 px-4 uppercase font-semibold text-sm">Cliente</th>
+                                    <th class="w-2/12 text-left py-3 px-4 uppercase font-semibold text-sm">Profissional</th>
+                                    <th class="w-2/12 text-left py-3 px-4 uppercase font-semibold text-sm">Serviço</th>
+                                    <th class="w-2/12 text-left py-3 px-4 uppercase font-semibold text-sm">Data/Hora</th>
+                                    <th class="w-1/12 text-left py-3 px-4 uppercase font-semibold text-sm">Status</th>
+                                    <th class="w-2/12 text-center py-3 px-4 uppercase font-semibold text-sm">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700">
+                                <!-- Exemplo de linha de dados (em um projeto real, isso viria do th:each) -->
+                                <tr>
+                                    <td class="text-left py-3 px-4">101</td>
+                                    <td class="text-left py-3 px-4">Carlos Silva</td>
+                                    <td class="text-left py-3 px-4">Dr. Ana</td>
+                                    <td class="text-left py-3 px-4">Consulta</td>
+                                    <td class="text-left py-3 px-4">19/05/2026 10:00</td>
+                                    <td class="text-left py-3 px-4">
+                                        <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Confirmado</span>
+                                    </td>
+                                    <td class="text-center py-3 px-4">
+                                        <a href="#" class="text-blue-500 hover:text-blue-700 mx-2"><i class="fas fa-edit"></i></a>
+                                        <a href="#" class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="text-left py-3 px-4">102</td>
+                                    <td class="text-left py-3 px-4">Mariana Costa</td>
+                                    <td class="text-left py-3 px-4">Dr. João</td>
+                                    <td class="text-left py-3 px-4">Limpeza</td>
+                                    <td class="text-left py-3 px-4">19/05/2026 11:30</td>
+                                    <td class="text-left py-3 px-4">
+                                        <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">Pendente</span>
+                                    </td>
+                                    <td class="text-center py-3 px-4">
+                                        <a href="#" class="text-blue-500 hover:text-blue-700 mx-2"><i class="fas fa-edit"></i></a>
+                                        <a href="#" class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left py-3 px-4">103</td>
+                                    <td class="text-left py-3 px-4">Pedro Almeida</td>
+                                    <td class="text-left py-3 px-4">Dr. Ana</td>
+                                    <td class="text-left py-3 px-4">Extração</td>
+                                    <td class="text-left py-3 px-4">20/05/2026 09:00</td>
+                                    <td class="text-left py-3 px-4">
+                                        <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-xs">Cancelado</span>
+                                    </td>
+                                    <td class="text-center py-3 px-4">
+                                        <a href="#" class="text-blue-500 hover:text-blue-700 mx-2"><i class="fas fa-edit"></i></a>
+                                        <a href="#" class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="w-full md:w-1/5 bg-gray-900 md:min-h-screen px-2 text-white">
+            <div class="md:relative mx-auto lg:float-right lg:px-6">
+                <ul class="list-reset flex flex-row md:flex-col text-center md:text-left">
+                    <li class="mr-3 flex-1">
+                        <a href="/dashboard" class="block py-1 md:py-3 pl-1 align-middle text-blue-400 no-underline hover:text-white border-b-2 border-blue-400 md:border-b-0 md:border-l-2 md:border-blue-400">
+                            <i class="fas fa-tachometer-alt fa-fw mr-3 text-blue-400"></i><span class="pb-1 md:pb-0 text-sm">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mr-3 flex-1">
+                        <a href="#" class="block py-1 md:py-3 pl-1 align-middle text-gray-400 no-underline hover:text-white border-b-2 border-transparent hover:border-pink-500">
+                            <i class="fas fa-calendar-check fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Agendamentos</span>
+                        </a>
+                    </li>
+                    <li class="mr-3 flex-1">
+                        <a href="#" class="block py-1 md:py-3 pl-1 align-middle text-gray-400 no-underline hover:text-white border-b-2 border-transparent hover:border-purple-500">
+                            <i class="fas fa-users fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Clientes</span>
+                        </a>
+                    </li>
+                    <li class="mr-3 flex-1">
+                        <a href="#" class="block py-1 md:py-3 pl-1 align-middle text-gray-400 no-underline hover:text-white border-b-2 border-transparent hover:border-green-500">
+                            <i class="fas fa-user-md fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Profissionais</span>
+                        </a>
+                    </li>
+                    <li class="mr-3 flex-1">
+                        <a href="#" class="block py-1 md:py-3 pl-1 align-middle text-gray-400 no-underline hover:text-white border-b-2 border-transparent hover:border-red-500">
+                            <i class="fas fa-concierge-bell fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Serviços</span>
+                        </a>
+                    </li>
+                    <li class="mr-3 flex-1">
+                        <form th:action="@{/logout}" method="post" class="inline">
+                            <button type="submit" class="block w-full text-left py-1 md:py-3 pl-1 align-middle text-gray-400 no-underline hover:text-white border-b-2 border-transparent hover:border-gray-500">
+                                <i class="fas fa-sign-out-alt fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Sair</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
