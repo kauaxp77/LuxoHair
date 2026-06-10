@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Liso Luxo Hair • Meus Agendamentos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="flex bg-[#f6f6f7] min-h-screen">
+
+  <aside class="w-72 bg-[#1c1c1c] text-white p-8">
+    <h1 class="text-4xl font-black text-[#c7a17a] mb-14">Liso Luxo</h1>
+    <nav class="space-y-4">
+      <div class="block bg-[#8B6B4A] p-4 rounded-[20px] font-semibold"><i class="fa-solid fa-clock-history mr-3"></i>Minhas Agendas</div>
+      <a href="login.html" class="block hover:bg-[#2a2a2a] p-4 rounded-[20px] text-gray-400"><i class="fa-solid fa-sign-out-alt mr-3"></i>Sair</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-10 overflow-y-auto">
+    <div class="mb-10">
+      <h1 class="text-5xl font-black">Área do Cliente</h1>
+      <p class="text-gray-500 mt-2">Marque seu horário e consulte seu histórico de tratamentos.</p>
+    </div>
+
+    <div id="mensagemErro" class="hidden bg-red-50 border border-red-200 text-red-600 rounded-[22px] p-4 mb-6 text-sm font-semibold"></div>
+    <div id="mensagemSucesso" class="hidden bg-green-50 border border-green-200 text-green-600 rounded-[22px] p-4 mb-6 text-sm font-semibold"></div>
+
+    <div class="bg-white rounded-[35px] p-10 shadow-sm mb-10">
+      <h2 class="text-2xl font-black mb-6 text-gray-800"><i class="fa-solid fa-calendar-plus mr-3 text-[#8B6B4A]"></i>Solicitar Novo Agendamento</h2>
+      
+      <form id="formAgendamento" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block mb-2 font-semibold text-gray-700 text-sm">Escolha o Serviço</label>
+          <select id="selectServico" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A]">
+            <option value="">Carregando serviços...</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-semibold text-gray-700 text-sm">Profissional Técnico</label>
+          <select id="selectProfissional" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A]">
+            <option value="1">Gabrielle Silva</option>
+            <option value="2">Juliana Medeiros</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 font-semibold text-gray-700 text-sm">Data e Horário</label>
+          <input id="inputDataHora" type="datetime-local" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A]">
+        </div>
+
+        <div class="flex items-end">
+          <button type="submit" class="w-full h-12 rounded-[15px] bg-[#8B6B4A] hover:bg-[#73583c] transition text-white font-semibold">
+            Confirmar Agendamento no Sistema
+          </button>
+        </div>
+      </form>
+
+      <div id="containerWhats" class="hidden mt-6 pt-6 border-t border-gray-100 flex justify-center">
+        <a id="btnWhatsApp" target="_blank" class="bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold py-3 px-6 rounded-[18px] inline-flex items-center gap-3 shadow-lg transition">
+          <i class="fa-brands fa-whatsapp text-xl"></i> Enviar Confirmação para o WhatsApp do Salão
+        </a>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-[35px] p-10 shadow-sm">
+      <h2 class="text-2xl font-black mb-6 text-gray-800">Seu Histórico de Sessões</h2>
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b text-gray-400">
+            <th class="pb-4">Procedimento Realizado</th>
+            <th class="pb-4">Data da Sessão</th>
+            <th class="pb-4">Profissional Técnico</th>
+            <th class="pb-4 text-right">Ação</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-cliente">
+          <tr>
+            <td colspan="4" class="text-center py-5 text-gray-400">Carregando seus agendamentos...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="js/cliente.js"></script>
+</body>
+</html>

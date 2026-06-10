@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liso Luxo Hair - Cadastrar Serviço</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 { text-align: center; color: #333; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #666; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; border: none; color: white; font-size: 16px; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #mensagem { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Cadastrar Serviço</h2>
+    <form id="servicoForm">
+        <div class="input-group">
+            <label for="nome_servico">Nome do Serviço:</label>
+            <input type="text" id="nome_servico" required placeholder="Ex: Alisamento a Ozônio">
+        </div>
+        <div class="input-group">
+            <label for="preco">Preço (R$):</label>
+            <input type="number" id="preco" step="0.01" required placeholder="Ex: 180.00">
+        </div>
+        <button type="submit">Salvar no Banco</button>
+    </form>
+    <div id="mensagem"></div>
+</div>
+
+<script>
+    document.getElementById('servicoForm').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Impede a página de atualizar ao clicar no botão
+
+        // 1. Pega os valores digitados na tela
+        const nomeServico = document.getElementById('nome_servico').value;
+        const precoServico = parseFloat(document.getElementById('preco').value);
+        const mensagemDiv = document.getElementById('mensagem');
+
+        // 2. Monta o objeto JSON igualzinho ao que funcionou no Postman
+        const dadosFormulario = {
+            "nome_servico": nomeServico,
+            "preco": precoServico
+        };
+
+        try {
+            // 3. Faz o disparo real para o seu Back-end Java local
+            const resposta = await fetch('http://localhost:8081/admin/servicos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosFormulario) // Transforma o objeto em texto JSON
+            });
+
+            // 4. Trata a resposta do servidor
+            if (resposta.status === 201 || resposta.ok) {
+                mensagemDiv.style.color = 'green';
+                mensagemDiv.innerText = '✅ Serviço cadastrado com sucesso no PostgreSQL!';
+                document.getElementById('servicoForm').reset(); // Limpa os campos
+            } else {
+                mensagemDiv.style.color = 'red';
+                mensagemDiv.innerText = '❌ Erro ao cadastrar serviço.';
+            }
+
+        } catch (error) {
+            mensagemDiv.style.color = 'red';
+            mensagemDiv.innerText = '🚨 Erro de conexão com o Back-end. O Java está ligado?';
+            console.error('Erro detalhado:', error);
+        }
+    });
+</script>
+
+</body>
+</html>
