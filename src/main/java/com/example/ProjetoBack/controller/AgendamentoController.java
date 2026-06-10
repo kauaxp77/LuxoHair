@@ -1,17 +1,7 @@
 package com.example.ProjetoBack.controller;
 
 import com.example.ProjetoBack.Service.AgendamentoServices;
-import com.example.ProjetoBack.Service.ClienteServices;
-import com.example.ProjetoBack.Service.ServicoServices;
-import com.example.ProjetoBack.dto.agendamentoDOTs.AgendamentoRequestDTO;
-import com.example.ProjetoBack.dto.agendamentoDOTs.AgendamentoResponseDTO;
 import com.example.ProjetoBack.model.Agendamento;
-import com.example.ProjetoBack.model.Cliente;
-import com.example.ProjetoBack.model.Servico;
-import com.example.ProjetoBack.repository.AgendamentoRepository;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,25 +9,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/agendamentos")
-@RequiredArgsConstructor
 public class AgendamentoController {
 
 
     private final AgendamentoServices agendamentoServices;
 
+    public AgendamentoController(AgendamentoServices agendamentoServices) {
+        this.agendamentoServices = agendamentoServices;
+    }
+
     @PostMapping
-    ResponseEntity<AgendamentoResponseDTO> adicionarAgendamento(@Valid @RequestBody AgendamentoRequestDTO dto){
-        Agendamento agendamento = agendamentoServices.adicionarAgendamento(dto);
+    ResponseEntity<Agendamento> adicionarAgendamento(@RequestBody Agendamento agendamento){ //botar dto dps
+        Agendamento agendamento1 = agendamentoServices.adicionarAgendamento(agendamento); //dto
 
-        AgendamentoResponseDTO response;
+        Agendamento response; // dto response
 
-        response = new AgendamentoResponseDTO(
-                agendamento.getId_agendamento(),
-                agendamento.getCliente(),
-                agendamento.getProfissional(),
-                agendamento.getServico(),
-                agendamento.getData_hora(),
-                agendamento.getStatus()
+        response = new Agendamento( //
+                agendamento1.getId_agendamento(),
+                agendamento1.getCliente(),
+                agendamento1.getProfissional(),
+                agendamento1.getServico(),
+                agendamento1.getData_hora(),
+                agendamento1.getStatus()
         );
 
         return ResponseEntity.status(201).body(response);
