@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Liso Luxo Hair • Master Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="flex bg-[#f6f6f7] min-h-screen relative">
+
+<aside class="w-72 bg-[#1c1c1c] text-white p-8 flex flex-col justify-between">
+  <div class="space-y-4">
+    <h1 class="text-5xl font-black text-[#c7a17a] mb-14">Liso Luxo</h1>
+    <nav class="space-y-4">
+      <div class="block bg-[#8B6B4A] p-4 rounded-[20px] font-semibold"><i class="fa-solid fa-chart-line mr-3"></i>Painel Master</div>
+      <button id="btnAbrirModal" class="w-full flex items-center hover:bg-[#2a2a2a] p-4 rounded-[20px] text-gray-400 hover:text-white transition font-semibold text-left">
+        <i class="fa-solid fa-user-plus mr-3"></i>Novo Funcionário
+      </button>
+    </nav>
+  </div>
+  <nav>
+    <a href="../login.html" id="btnSair" class="block hover:bg-[#2a2a2a] p-4 rounded-[20px] text-gray-400 hover:text-white transition font-semibold">
+      <i class="fa-solid fa-sign-out-alt mr-3"></i>Sair
+    </a>
+  </nav>
+</aside>
+
+<main class="flex-1 p-10">
+  <div class="mb-10">
+    <h1 class="text-5xl font-black">Dashboard do Gerente</h1>
+    <p class="text-gray-500 mt-2">Visão geral do faturamento e alteração de privilégios de acessos.</p>
+  </div>
+
+  <!-- Cards financeiros -->
+  <div class="grid grid-cols-3 gap-6 mb-10">
+    <div class="bg-white p-8 rounded-[30px] shadow-sm">
+      <p class="text-gray-400 mb-2">Lucro do Dia (Bruto)</p>
+      <h2 id="faturamento-bruto" class="text-4xl font-black text-[#8B6B4A]">R$ —</h2>
+    </div>
+    <div class="bg-white p-8 rounded-[30px] shadow-sm">
+      <p class="text-gray-400 mb-2">Comissões Devidas à Equipe</p>
+      <h2 id="comissoes-totais" class="text-4xl font-black text-red-600">R$ —</h2>
+    </div>
+    <div class="bg-white p-8 rounded-[30px] shadow-sm">
+      <p class="text-gray-400 mb-2">Retenção Líquida da Empresa</p>
+      <h2 id="retencao-liquida" class="text-4xl font-black text-green-600">R$ —</h2>
+    </div>
+  </div>
+
+  <!-- Feedback mensagens -->
+  <div id="msgErroGerente" class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-[15px] font-medium"></div>
+  <div id="msgSucessoGerente" class="hidden mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-[15px] font-medium"></div>
+
+  <!-- Tabela equipe -->
+  <div class="bg-white rounded-[35px] p-10 shadow-sm mb-10">
+    <h2 class="text-2xl font-black mb-6 text-gray-800">Hierarquia da Equipe</h2>
+    <table class="w-full text-left">
+      <thead>
+      <tr class="border-b text-gray-400 text-sm">
+        <th class="pb-3">Colaborador (login)</th>
+        <th class="pb-3">Permissão de Acesso</th>
+        <th class="pb-3 text-right">Ação</th>
+      </tr>
+      </thead>
+      <tbody id="tabela-equipe">
+      <tr><td colspan="3" class="text-center py-8 text-gray-400">
+        <i class="fa-solid fa-spinner fa-spin mr-2"></i>Carregando equipe...
+      </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabela histórico financeiro -->
+  <div class="bg-white rounded-[35px] p-10 shadow-sm">
+    <h2 class="text-3xl font-black mb-8">Histórico Analítico de Ganhos</h2>
+    <table class="w-full text-left">
+      <thead>
+      <tr class="border-b text-gray-400">
+        <th class="pb-5">Cliente</th>
+        <th class="pb-5">Procedimento</th>
+        <th class="pb-5">Data</th>
+        <th class="pb-5 text-right">Valor Bruto</th>
+      </tr>
+      </thead>
+      <tbody id="tabela-historico-gerente">
+      <tr><td colspan="4" class="text-center py-8 text-gray-400">
+        <i class="fa-solid fa-spinner fa-spin mr-2"></i>Carregando histórico...
+      </td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Modal Novo Funcionário -->
+<div id="modalFuncionario" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="bg-white w-full max-w-lg rounded-[35px] p-10 shadow-2xl relative">
+    <button id="btnFecharModal" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 text-xl transition">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="mb-6">
+      <h2 class="text-3xl font-black text-gray-800">Novo Colaborador</h2>
+      <p class="text-gray-500 text-sm mt-1">Registre um novo profissional na equipe técnica do salão.</p>
+    </div>
+
+    <div id="modalFuncErro" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[12px] text-sm font-medium"></div>
+
+    <div class="space-y-5">
+      <div>
+        <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Login (e-mail ou usuário)</label>
+        <input id="inputLogin" type="text" placeholder="Ex: juliana@lisoluxo.com" required
+               class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+      </div>
+      <div>
+        <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Senha de Acesso</label>
+        <input id="inputSenha" type="password" placeholder="Mínimo 6 caracteres" required
+               class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+      </div>
+      <div>
+        <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Nível de Permissão</label>
+        <select id="selectRole" class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+          <option value="FUNC">Funcionária (Área Técnica / Agenda Isolada)</option>
+          <option value="ADMIN">Gerente (Acesso Master)</option>
+        </select>
+      </div>
+      <button id="btnCadastrarFunc" type="button"
+              class="w-full h-12 rounded-[15px] bg-[#8B6B4A] hover:bg-[#73583c] transition text-white font-bold shadow-lg shadow-[#8B6B4A]/20 mt-2">
+        Cadastrar Profissional
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = 'http://localhost:8081';
+
+  function getToken() {
+    return localStorage.getItem('token') || localStorage.getItem('jwt') || sessionStorage.getItem('token') || null;
+  }
+
+  function authHeaders() {
+    const token = getToken();
+    const h = { 'Content-Type': 'application/json' };
+    if (token) h['Authorization'] = `Bearer ${token}`;
+    return h;
+  }
+
+  function formatarData(dataHora) {
+    if (!dataHora) return 'A definir';
+    if (typeof dataHora === 'string' && dataHora.includes('T')) {
+      const [d] = dataHora.split('T');
+      return d.split('-').reverse().join('/');
+    }
+    return dataHora;
+  }
+
+  function roleBadge(role) {
+    if (!role) return '—';
+    const r = role.toString().toUpperCase();
+    if (r.includes('ADMIN')) return `<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">Gerente</span>`;
+    if (r.includes('FUNC')) return `<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold">Funcionária</span>`;
+    return `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">${role}</span>`;
+  }
+
+  // ── Carrega equipe (funcionários com role FUNC) ─────────────────────────
+  async function carregarEquipe() {
+    const tbody = document.getElementById('tabela-equipe');
+    try {
+      const res = await fetch(`${API_URL}/gerente/funcionarios`, { headers: authHeaders() });
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+      const lista = await res.json();
+
+      if (!lista.length) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-8 text-gray-400">Nenhum colaborador cadastrado ainda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = lista.map(f => `
+          <tr class="border-b text-gray-600 hover:bg-gray-50 transition">
+            <td class="py-4 font-semibold text-gray-900">${f.login}</td>
+            <td>${roleBadge(f.role)}</td>
+            <td class="text-right">
+              <button class="text-[#8B6B4A] font-bold hover:underline text-sm"
+                onclick="alert('Funcionalidade de edição de role em desenvolvimento.')">
+                Editar
+              </button>
+            </td>
+          </tr>`).join('');
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="3" class="text-center py-5 text-red-500">Erro ao carregar equipe: ${err.message}</td></tr>`;
+    }
+  }
+
+  // ── Carrega histórico de agendamentos + financeiro ──────────────────────
+  async function carregarHistorico() {
+    const tbody  = document.getElementById('tabela-historico-gerente');
+    const bruto  = document.getElementById('faturamento-bruto');
+    const comiss = document.getElementById('comissoes-totais');
+    const liq    = document.getElementById('retencao-liquida');
+
+    try {
+      const res = await fetch(`${API_URL}/gerente/agendamentos`, { headers: authHeaders() });
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+      const agendamentos = await res.json();
+
+      if (!agendamentos.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-400">Nenhum agendamento registrado ainda.</td></tr>`;
+        bruto.innerText = 'R$ 0,00'; comiss.innerText = 'R$ 0,00'; liq.innerText = 'R$ 0,00';
+        return;
+      }
+
+      let faturamentoTotal = 0;
+
+      tbody.innerHTML = agendamentos.map(a => {
+        const cliente  = a.cliente  || 'Cliente Geral';
+        const servico  = a.servico?.nome_servico  || a.servico  || 'Serviço Geral';
+        const preco    = a.servico?.preco != null ? parseFloat(a.servico.preco) : 0;
+        faturamentoTotal += preco;
+        const data = formatarData(a.data_hora || a.dataHora);
+        return `<tr class="border-b hover:bg-gray-50 transition">
+            <td class="py-5 font-semibold">${cliente}</td>
+            <td>${servico}</td>
+            <td>${data}</td>
+            <td class="text-right font-black text-green-600">R$ ${preco.toFixed(2)}</td>
+          </tr>`;
+      }).join('');
+
+      const totalComissoes = faturamentoTotal * 0.40;
+      const totalLiquido   = faturamentoTotal - totalComissoes;
+      bruto.innerText  = `R$ ${faturamentoTotal.toFixed(2).replace('.', ',')}`;
+      comiss.innerText = `R$ ${totalComissoes.toFixed(2).replace('.', ',')}`;
+      liq.innerText    = `R$ ${totalLiquido.toFixed(2).replace('.', ',')}`;
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5 text-red-500">Erro ao carregar histórico: ${err.message}</td></tr>`;
+    }
+  }
+
+  // ── Cadastrar novo funcionário ──────────────────────────────────────────
+  document.getElementById('btnCadastrarFunc').addEventListener('click', async () => {
+    const errDiv = document.getElementById('modalFuncErro');
+    const btn    = document.getElementById('btnCadastrarFunc');
+    errDiv.classList.add('hidden');
+
+    const login    = document.getElementById('inputLogin').value.trim();
+    const password = document.getElementById('inputSenha').value;
+    const role     = document.getElementById('selectRole').value; // "FUNC" ou "ADMIN"
+
+    if (!login || !password) {
+      errDiv.innerText = '⚠️ Preencha login e senha.';
+      errDiv.classList.remove('hidden');
+      return;
+    }
+
+    btn.disabled = true; btn.innerText = 'Cadastrando...';
+
+    try {
+      const res = await fetch(`${API_URL}/gerente/funcionarios`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ login, password, role })
+      });
+
+      if (res.ok) {
+        document.getElementById('modalFuncionario').classList.add('hidden');
+        document.getElementById('inputLogin').value  = '';
+        document.getElementById('inputSenha').value  = '';
+
+        const msgOk = document.getElementById('msgSucessoGerente');
+        msgOk.innerText = `✅ Funcionário "${login}" cadastrado com sucesso!`;
+        msgOk.classList.remove('hidden');
+        setTimeout(() => msgOk.classList.add('hidden'), 4000);
+
+        carregarEquipe(); // atualiza a tabela de equipe
+      } else if (res.status === 400) {
+        errDiv.innerText = '❌ Este login já está cadastrado no sistema.';
+        errDiv.classList.remove('hidden');
+      } else {
+        throw new Error(`Status ${res.status}`);
+      }
+    } catch (err) {
+      errDiv.innerText = `❌ Falha ao cadastrar: ${err.message}`;
+      errDiv.classList.remove('hidden');
+    } finally {
+      btn.disabled = false; btn.innerText = 'Cadastrar Profissional';
+    }
+  });
+
+  // ── Modal controls ──────────────────────────────────────────────────────
+  const modal = document.getElementById('modalFuncionario');
+  document.getElementById('btnAbrirModal').addEventListener('click', () => {
+    document.getElementById('modalFuncErro').classList.add('hidden');
+    modal.classList.remove('hidden');
+  });
+  document.getElementById('btnFecharModal').addEventListener('click', () => modal.classList.add('hidden'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+
+  // ── Logout ──────────────────────────────────────────────────────────────
+  document.getElementById('btnSair').addEventListener('click', e => {
+    e.preventDefault();
+    localStorage.removeItem('token'); localStorage.removeItem('jwt'); sessionStorage.removeItem('token');
+    window.location.href = 'login.html';
+  });
+
+  // ── Init ────────────────────────────────────────────────────────────────
+  carregarEquipe();
+  carregarHistorico();
+</script>
+</body>
+</html>

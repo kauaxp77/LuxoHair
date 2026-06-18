@@ -1,0 +1,17 @@
+package com.example.ProjetoBack.model.user;
+
+public enum UserRole {
+    ADMIN("admin"),
+    FUNC("funcionari"),
+    USER("user");
+
+    private String role;
+
+    UserRole(String role){
+        this.role = role;
+    }
+
+    public String getRole(){
+        return role;
+    }
+}

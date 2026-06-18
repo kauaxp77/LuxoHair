@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Liso Luxo Hair • Meus Agendamentos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="flex bg-[#f6f6f7] min-h-screen relative">
+
+  <aside class="w-72 bg-[#1c1c1c] text-white p-8 flex flex-col justify-between">
+    <div class="space-y-4">
+      <h1 class="text-4xl font-black text-[#c7a17a] mb-14">Liso Luxo</h1>
+      <nav class="space-y-4">
+        <div class="block bg-[#8B6B4A] p-4 rounded-[20px] font-semibold cursor-pointer">
+          <i class="fa-solid fa-clock-history mr-3"></i>Minhas Agendas
+        </div>
+        
+        <button id="btnAbrirModal" class="w-full flex items-center hover:bg-[#2a2a2a] p-4 rounded-[20px] text-gray-400 hover:text-white transition font-semibold text-left">
+          <i class="fa-solid fa-calendar-plus mr-3"></i>Novo Agendamento
+        </button>
+      </nav>
+    </div>
+    
+    <nav>
+      <a href="../login.html" id="btnSair" class="block hover:bg-[#2a2a2a] p-4 rounded-[20px] text-gray-400 hover:text-white transition font-semibold">
+        <i class="fa-solid fa-sign-out-alt mr-3"></i>Sair
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-10">
+    <div class="mb-10">
+      <h1 class="text-5xl font-black">Seu Histórico de Tratamentos</h1>
+      <p class="text-gray-500 mt-2">Visão unificada das suas sessões com os nossos profissionais.</p>
+    </div>
+
+    <!-- Mensagens de feedback -->
+    <div id="mensagemErro" class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-[15px] font-medium"></div>
+    <div id="mensagemSucesso" class="hidden mb-6 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-[15px] font-medium"></div>
+
+    <div class="bg-white rounded-[35px] p-10 shadow-sm">
+      <!-- Estado de carregamento -->
+      <div id="estadoCarregando" class="text-center py-12 text-gray-400">
+        <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-[#8B6B4A]"></i>
+        <p class="font-medium">Carregando seus agendamentos...</p>
+      </div>
+
+      <table id="tabelaWrapper" class="hidden w-full text-left">
+        <thead>
+          <tr class="border-b text-gray-400">
+            <th class="pb-4">Procedimento Realizado</th>
+            <th class="pb-4">Data da Sessão</th>
+            <th class="pb-4">Profissional Técnico</th>
+            <th class="pb-4 text-right">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-cliente"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal de Novo Agendamento -->
+  <div id="modalAgendamento" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-lg rounded-[35px] p-10 shadow-2xl relative">
+      
+      <button id="btnFecharModal" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 text-xl transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-6">
+        <h2 class="text-3xl font-black text-gray-800">Nova Sessão</h2>
+        <p class="text-gray-500 text-sm mt-1">Preencha os dados abaixo para reservar seu horário.</p>
+      </div>
+
+      <!-- Mensagens dentro do modal -->
+      <div id="modalErro" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[12px] text-sm font-medium"></div>
+
+      <div id="formAgendamento" class="space-y-5">
+        <div>
+          <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Procedimento Desejado</label>
+          <select id="selectServico" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+            <option value="">-- Carregando procedimentos... --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Profissional Técnico</label>
+          <select id="selectProfissional" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+            <option value="">-- Carregando profissionais... --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1.5 font-semibold text-gray-700 text-sm">Data e Horário</label>
+          <input id="inputDataHora" type="datetime-local" required class="w-full h-12 rounded-[15px] bg-[#f6f6f6] px-4 outline-none focus:ring-2 focus:ring-[#8B6B4A] font-medium text-gray-700">
+        </div>
+
+        <button id="btnConfirmar" type="button" class="w-full h-12 rounded-[15px] bg-[#8B6B4A] hover:bg-[#73583c] transition text-white font-bold shadow-lg shadow-[#8B6B4A]/20 mt-2">
+          Confirmar Agendamento
+        </button>
+      </div>
+
+      <!-- Botão WhatsApp (aparece após sucesso) -->
+      <div id="containerWhats" class="hidden mt-5">
+        <a id="btnWhatsApp" href="#" target="_blank"
+           class="flex items-center justify-center gap-3 w-full h-12 rounded-[15px] bg-green-500 hover:bg-green-600 transition text-white font-bold">
+          <i class="fa-brands fa-whatsapp text-xl"></i>
+          Confirmar pelo WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:8081';
+
+    // =============================================
+    // UTILITÁRIOS
+    // =============================================
+
+    function getToken() {
+      // Tenta recuperar o JWT do localStorage (salvo pelo auth.js no login)
+      return localStorage.getItem('token') || localStorage.getItem('jwt') || sessionStorage.getItem('token') || null;
+    }
+
+    function authHeaders() {
+      const token = getToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      return headers;
+    }
+
+    function formatarDataHora(dataHora) {
+      if (!dataHora) return 'A definir';
+      // Pode vir como "2026-05-24T14:00:00" ou "2026-05-24T14:00"
+      if (typeof dataHora === 'string' && dataHora.includes('T')) {
+        const [datePart, timePart] = dataHora.split('T');
+        const dataInvertida = datePart.split('-').reverse().join('/');
+        return `${dataInvertida} às ${timePart.substring(0, 5)}`;
+      }
+      return dataHora;
+    }
+
+    function statusBadge(status) {
+      const s = (status || '').toUpperCase();
+      if (s === 'CONFIRMADO' || s === 'AGENDADO') {
+        return `<span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Confirmado</span>`;
+      } else if (s === 'CANCELADO') {
+        return `<span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Cancelado</span>`;
+      } else if (s === 'CONCLUIDO' || s === 'CONCLUÍDO') {
+        return `<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Concluído</span>`;
+      }
+      return `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">${status || 'Pendente'}</span>`;
+    }
+
+    // =============================================
+    // CARREGAMENTO DE AGENDAMENTOS
+    // =============================================
+
+    async function carregarAgendamentos() {
+      const estadoCarregando = document.getElementById('estadoCarregando');
+      const tabelaWrapper = document.getElementById('tabelaWrapper');
+      const tabelaCliente = document.getElementById('tabela-cliente');
+      const mensagemErro = document.getElementById('mensagemErro');
+
+      estadoCarregando.classList.remove('hidden');
+      tabelaWrapper.classList.add('hidden');
+      mensagemErro.classList.add('hidden');
+
+      try {
+        const res = await fetch(`${API_URL}/cliente/meus-agendamentos`, {
+          method: 'GET',
+          headers: authHeaders()
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          mensagemErro.innerText = '🔒 Sessão expirada. Faça login novamente.';
+          mensagemErro.classList.remove('hidden');
+          estadoCarregando.classList.add('hidden');
+          setTimeout(() => window.location.href = 'login.html', 2000);
+          return;
+        }
+
+        if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+        const agendamentos = await res.json();
+
+        estadoCarregando.classList.add('hidden');
+        tabelaWrapper.classList.remove('hidden');
+
+        if (!agendamentos || agendamentos.length === 0) {
+          tabelaCliente.innerHTML = `
+            <tr>
+              <td colspan="4" class="text-center py-12 text-gray-400">
+                <i class="fa-regular fa-calendar-xmark text-3xl mb-3 block"></i>
+                Nenhum agendamento encontrado. Clique em "Novo Agendamento" para começar!
+              </td>
+            </tr>`;
+          return;
+        }
+
+        tabelaCliente.innerHTML = agendamentos.map(agenda => {
+          // AgendamentoResponseDTO: { id_agendamento, cliente (String), profissional (User), servico (Servico), data_hora, status }
+          const nomeServico = agenda.servico?.nome_servico || agenda.servico || 'Procedimento Geral';
+          const nomeProfissional = agenda.profissional?.login || agenda.profissional || 'Profissional Técnico';
+          const dataFormatada = formatarDataHora(agenda.data_hora || agenda.dataHora);
+
+          return `
+            <tr class="border-b text-gray-600 hover:bg-gray-50 transition">
+              <td class="py-5 font-semibold text-gray-900">${nomeServico}</td>
+              <td>${dataFormatada}</td>
+              <td class="font-bold text-gray-800">
+                <i class="fa-solid fa-scissors mr-2 text-[#8B6B4A]"></i>${nomeProfissional}
+              </td>
+              <td class="text-right">${statusBadge(agenda.status)}</td>
+            </tr>`;
+        }).join('');
+
+      } catch (error) {
+        estadoCarregando.classList.add('hidden');
+        tabelaWrapper.classList.remove('hidden');
+        mensagemErro.innerText = '🚨 Não foi possível carregar os agendamentos. Verifique se o servidor está rodando.';
+        mensagemErro.classList.remove('hidden');
+        console.error('Erro ao buscar agendamentos:', error);
+      }
+    }
+
+    // =============================================
+    // CARREGAMENTO DO FORMULÁRIO (Modal)
+    // =============================================
+
+    async function carregarServicos() {
+      const select = document.getElementById('selectServico');
+      try {
+        const res = await fetch(`${API_URL}/admin/servicos`, { headers: authHeaders() });
+        if (!res.ok) throw new Error();
+        const servicos = await res.json();
+        select.innerHTML = '<option value="">-- Selecione o Procedimento --</option>' +
+          servicos.map(s => {
+            const preco = s.preco != null ? ` - R$ ${parseFloat(s.preco).toFixed(2)}` : '';
+            return `<option value="${s.id_servico}" data-nome="${s.nome_servico}">${s.nome_servico}${preco}</option>`;
+          }).join('');
+      } catch {
+        select.innerHTML = '<option value="">Erro ao carregar — tente novamente</option>';
+      }
+    }
+
+    async function carregarProfissionais() {
+      const select = document.getElementById('selectProfissional');
+      try {
+        // Tenta buscar profissionais pelo endpoint de gerente
+        const res = await fetch(`${API_URL}/gerente/profissionais`, { headers: authHeaders() });
+        if (!res.ok) throw new Error();
+        const profissionais = await res.json();
+        select.innerHTML = '<option value="">-- Selecione a Profissional --</option>' +
+          profissionais.map(p => `<option value="${p.id}">${p.login || p.nome || p.email}</option>`).join('');
+      } catch {
+        // Fallback com opções fixas caso o endpoint não esteja acessível
+        select.innerHTML = `
+          <option value="">-- Selecione a Profissional --</option>
+          <option value="gabrielle">Gabrielle Silva</option>
+          <option value="juliana">Juliana Medeiros</option>`;
+      }
+    }
+
+    // =============================================
+    // ENVIO DO NOVO AGENDAMENTO
+    // =============================================
+
+    document.getElementById('btnConfirmar').addEventListener('click', async () => {
+      const modalErro = document.getElementById('modalErro');
+      const mensagemSucesso = document.getElementById('mensagemSucesso');
+      const containerWhats = document.getElementById('containerWhats');
+
+      modalErro.classList.add('hidden');
+      mensagemSucesso.classList.add('hidden');
+      containerWhats.classList.add('hidden');
+
+      const idServico = document.getElementById('selectServico').value;
+      const idProfissional = document.getElementById('selectProfissional').value;
+      const dataHoraValue = document.getElementById('inputDataHora').value;
+
+      if (!idServico || !idProfissional || !dataHoraValue) {
+        modalErro.innerText = '⚠️ Preencha todos os campos antes de confirmar.';
+        modalErro.classList.remove('hidden');
+        return;
+      }
+
+      // Formata para LocalDateTime do Java: "YYYY-MM-DDTHH:MM:SS"
+      const dataHoraFormatada = dataHoraValue.length === 16 ? `${dataHoraValue}:00` : dataHoraValue;
+
+      const novoAgendamento = {
+        profissionalId: idProfissional,         // String (UUID)
+        servicoId: parseInt(idServico),          // Long
+        data_hora: dataHoraFormatada,
+        status: "CONFIRMADO"
+      };
+
+      const btnConfirmar = document.getElementById('btnConfirmar');
+      btnConfirmar.disabled = true;
+      btnConfirmar.innerText = 'Aguarde...';
+
+      try {
+        const resposta = await fetch(`${API_URL}/cliente/agendamento`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify(novoAgendamento)
+        });
+
+        if (resposta.ok || resposta.status === 201) {
+          // Fecha o modal e recarrega a tabela
+          document.getElementById('modalAgendamento').classList.add('hidden');
+          document.getElementById('inputDataHora').value = '';
+
+          mensagemSucesso.innerText = '✅ Agendamento realizado com sucesso!';
+          mensagemSucesso.classList.remove('hidden');
+          setTimeout(() => mensagemSucesso.classList.add('hidden'), 4000);
+
+          // Monta link do WhatsApp
+          const selectServico = document.getElementById('selectServico');
+          const optionSelecionada = selectServico.options[selectServico.selectedIndex];
+          const nomeServicoText = optionSelecionada.getAttribute('data-nome') || optionSelecionada.text;
+          const profissionalText = document.getElementById('selectProfissional').options[document.getElementById('selectProfissional').selectedIndex].text;
+          const [dataBr, horaBr] = dataHoraValue.split('T');
+          const dataFormatadaWpp = dataBr.split('-').reverse().join('/');
+
+          const numeroSalao = "5561999117396";
+          const mensagemZap = `Olá! Acabei de realizar um agendamento pelo site no salão Liso Luxo Hair:\n\n✨ *Procedimento:* ${nomeServicoText}\n📅 *Data:* ${dataFormatadaWpp}\n⏰ *Horário:* ${horaBr}\n💇‍♀️ *Profissional:* ${profissionalText}\n\nPor favor, confirmem meu horário no sistema!`;
+          document.getElementById('btnWhatsApp').href = `https://api.whatsapp.com/send?phone=${numeroSalao}&text=${encodeURIComponent(mensagemZap)}`;
+          containerWhats.classList.remove('hidden');
+          setTimeout(() => containerWhats.classList.add('hidden'), 10000);
+
+          // Recarrega a tabela com o novo registro
+          carregarAgendamentos();
+
+        } else {
+          const texto = await resposta.text();
+          throw new Error(texto || `Status ${resposta.status}`);
+        }
+
+      } catch (error) {
+        modalErro.innerText = `❌ Falha ao criar agendamento: ${error.message || 'verifique os dados e tente novamente.'}`;
+        modalErro.classList.remove('hidden');
+        console.error('Erro no POST de agendamento:', error);
+      } finally {
+        btnConfirmar.disabled = false;
+        btnConfirmar.innerText = 'Confirmar Agendamento';
+      }
+    });
+
+    // =============================================
+    // CONTROLE DO MODAL
+    // =============================================
+
+    const modal = document.getElementById('modalAgendamento');
+
+    document.getElementById('btnAbrirModal').addEventListener('click', () => {
+      document.getElementById('modalErro').classList.add('hidden');
+      modal.classList.remove('hidden');
+    });
+
+    document.getElementById('btnFecharModal').addEventListener('click', () => modal.classList.add('hidden'));
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+
+    // =============================================
+    // LOGOUT
+    // =============================================
+
+    document.getElementById('btnSair').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      localStorage.removeItem('jwt');
+      sessionStorage.removeItem('token');
+      window.location.href = 'login.html';
+    });
+
+    // =============================================
+    // INICIALIZAÇÃO
+    // =============================================
+
+    carregarAgendamentos();
+    carregarServicos();
+    carregarProfissionais();
+  </script>
+</body>
+</html>

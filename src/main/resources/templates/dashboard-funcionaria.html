@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Liso Luxo Hair • Área Técnica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="flex bg-[#fff7fa] min-h-screen">
+
+  <aside class="w-72 bg-[#f5dfe6] p-8">
+    <h1 class="text-4xl font-black text-[#d68aa1] mb-14">Liso Luxo</h1>
+    <nav class="space-y-4">
+      <div class="bg-[#d68aa1] text-white p-4 rounded-[20px] font-semibold">
+        <i class="fa-solid fa-spray-can mr-3"></i>Minhas Agendas
+      </div>
+      <a href="login.html" id="btnSair" class="block bg-white p-4 rounded-[20px] text-gray-600 font-semibold hover:bg-pink-50 transition">
+        <i class="fa-solid fa-sign-out-alt mr-3"></i>Sair
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-10">
+    <div class="mb-10 flex justify-between items-center">
+      <div>
+        <h1 class="text-5xl font-black text-gray-900">Olá, <span id="nome-profissional">Profissional</span> 🌸</h1>
+        <p class="text-gray-500 mt-2">Visão restrita por governança: apenas sessões na sua cadeira.</p>
+      </div>
+      <div class="bg-white p-5 rounded-3xl shadow-sm text-center border border-pink-100">
+        <p class="text-xs text-gray-400 font-bold uppercase">Sua Comissão Acumulada</p>
+        <h3 id="comissao-val" class="text-2xl font-black text-[#d68aa1]">R$ —</h3>
+      </div>
+    </div>
+
+    <div id="msgErroFunc" class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-[15px] font-medium"></div>
+
+    <div class="bg-white rounded-[30px] p-10 shadow-sm">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b text-gray-400 text-sm">
+            <th class="pb-4">Cliente</th>
+            <th class="pb-4">Procedimento</th>
+            <th class="pb-4">Data</th>
+            <th class="pb-4">Preço Bruto</th>
+            <th class="pb-4 text-right">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-tecnica">
+          <tr>
+            <td colspan="5" class="text-center py-10 text-gray-400">
+              <i class="fa-solid fa-spinner fa-spin text-2xl mb-3 block text-[#d68aa1]"></i>
+              Carregando sua agenda técnica...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = 'http://localhost:8081';
+
+    function getToken() {
+      return localStorage.getItem('token') || localStorage.getItem('jwt') || sessionStorage.getItem('token') || null;
+    }
+
+    function authHeaders() {
+      const token = getToken();
+      const h = { 'Content-Type': 'application/json' };
+      if (token) h['Authorization'] = `Bearer ${token}`;
+      return h;
+    }
+
+    function formatarData(dataHora) {
+      if (!dataHora) return 'A definir';
+      if (typeof dataHora === 'string' && dataHora.includes('T')) {
+        return dataHora.split('T')[0].split('-').reverse().join('/');
+      }
+      return dataHora;
+    }
+
+    function statusBadge(status) {
+      const s = (status || '').toUpperCase();
+      if (s === 'CONFIRMADO') return `<span class="bg-pink-50 text-pink-700 px-3 py-1 rounded-full text-xs font-bold">Confirmado</span>`;
+      if (s === 'CANCELADO')  return `<span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Cancelado</span>`;
+      if (s.includes('CONC')) return `<span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Concluído</span>`;
+      return `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">${status || 'Pendente'}</span>`;
+    }
+
+    async function carregarAgenda() {
+      const tbody     = document.getElementById('tabela-tecnica');
+      const nomeSpan  = document.getElementById('nome-profissional');
+      const comissao  = document.getElementById('comissao-val');
+      const errDiv    = document.getElementById('msgErroFunc');
+
+      try {
+        // Usa o endpoint de profissional autenticada — retorna só os agendamentos dela
+        const res = await fetch(`${API_URL}/profissional/meus-agendamentos`, { headers: authHeaders() });
+
+        if (res.status === 401 || res.status === 403) {
+          errDiv.innerText = '🔒 Sessão expirada. Redirecionando para o login...';
+          errDiv.classList.remove('hidden');
+          setTimeout(() => window.location.href = 'login.html', 2000);
+          return;
+        }
+        if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+        const agendamentos = await res.json();
+
+        // Exibe o login da profissional logada no título (pego do primeiro agendamento)
+        if (agendamentos.length > 0 && agendamentos[0].profissional?.login) {
+          nomeSpan.innerText = agendamentos[0].profissional.login;
+        }
+
+        if (!agendamentos.length) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-400">
+            <i class="fa-regular fa-calendar-xmark text-3xl mb-3 block"></i>
+            Nenhum procedimento registrado na sua cadeira ainda.</td></tr>`;
+          comissao.innerText = 'R$ 0,00';
+          return;
+        }
+
+        let faturamentoCadeira = 0;
+
+        tbody.innerHTML = agendamentos.map(a => {
+          const cliente  = a.cliente  || 'Cliente Geral';
+          const servico  = a.servico?.nome_servico  || a.servico  || 'Serviço Geral';
+          const preco    = a.servico?.preco != null ? parseFloat(a.servico.preco) : 0;
+          faturamentoCadeira += preco;
+          const data = formatarData(a.data_hora || a.dataHora);
+
+          return `<tr class="border-b text-gray-600 hover:bg-pink-50 transition">
+            <td class="py-5 font-semibold text-gray-900">${cliente}</td>
+            <td>${servico}</td>
+            <td>${data}</td>
+            <td class="font-bold">R$ ${preco.toFixed(2)}</td>
+            <td class="text-right">${statusBadge(a.status)}</td>
+          </tr>`;
+        }).join('');
+
+        // 40% de comissão
+        const totalComissao = faturamentoCadeira * 0.40;
+        comissao.innerText = `R$ ${totalComissao.toFixed(2).replace('.', ',')}`;
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-red-500">
+          Erro ao carregar agenda técnica: ${err.message}</td></tr>`;
+        comissao.innerText = 'R$ —';
+      }
+    }
+
+    // ── Logout ──────────────────────────────────────────────────────────────
+    document.getElementById('btnSair').addEventListener('click', e => {
+      e.preventDefault();
+      localStorage.removeItem('token'); localStorage.removeItem('jwt'); sessionStorage.removeItem('token');
+      window.location.href = 'login.html';
+    });
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    carregarAgenda();
+  </script>
+</body>
+</html>
