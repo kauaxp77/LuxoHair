@@ -65,7 +65,7 @@
 
         try {
             // 3. Faz o disparo real para o seu Back-end Java local
-            const resposta = await fetch('http://localhost:8081/admin/servicos', {
+            const resposta = await fetch('/admin/servicos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

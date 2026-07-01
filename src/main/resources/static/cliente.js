@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8081';
+const API_URL = window.location.origin;
 
 // Armazena o ID do cliente logado de forma fixa até o JWT retornar
 // (Pode usar o ID 1 que criamos no primeiro teste de cliente)

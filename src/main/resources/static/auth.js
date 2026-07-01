@@ -1,5 +1,5 @@
 // URL base da sua API Java
-const API_URL = 'http://localhost:8081';
+const API_URL = window.location.origin;
 
 // Mapeamento dos elementos da tela
 const btnTabLogin = document.getElementById('btnTabLogin');

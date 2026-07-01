@@ -144,7 +144,7 @@
 </div>
 
 <script>
-  const API_URL = 'http://localhost:8081';
+  const API_URL = window.location.origin;
 
   function getToken() {
     return localStorage.getItem('token') || localStorage.getItem('jwt') || sessionStorage.getItem('token') || null;

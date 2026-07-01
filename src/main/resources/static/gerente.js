@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8081';
+const API_URL = window.location.origin;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Captura os elementos de exibição financeira dos cards

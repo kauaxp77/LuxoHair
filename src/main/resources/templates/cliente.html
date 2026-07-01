@@ -99,7 +99,7 @@
 </div>
 
 <script>
-  const API_URL = 'http://localhost:8081';
+  const API_URL = window.location.origin;
 
   function getToken() {
     return localStorage.getItem('token') || localStorage.getItem('jwt') || sessionStorage.getItem('token') || null;
@@ -198,7 +198,7 @@
       const lista = await res.json();
       if (!lista.length) { sel.innerHTML = '<option value="">Nenhuma profissional cadastrada</option>'; return; }
       sel.innerHTML = '<option value="">-- Selecione a Profissional --</option>' +
-              lista.map(p => `<option value="${p.id}">${p.login}</option>`).join('');
+              lista.map(p => `<option value="${p.login}">${p.login}</option>`).join('');
     } catch (err) {
       sel.innerHTML = `<option value="">Erro ao carregar profissionais</option>`;
       console.error('Profissionais:', err);
@@ -215,7 +215,7 @@
     modalErro.classList.add('hidden'); msgSucesso.classList.add('hidden'); containerWpp.classList.add('hidden');
 
     const idServico      = document.getElementById('selectServico').value;
-    const idProfissional = document.getElementById('selectProfissional').value;
+    const loginProfissional = document.getElementById('selectProfissional').value;
     const dataHoraValue  = document.getElementById('inputDataHora').value;
 
     if (!idServico || !idProfissional || !dataHoraValue) {
@@ -224,7 +224,7 @@
     }
 
     const dataHoraFormatada = dataHoraValue.length === 16 ? `${dataHoraValue}:00` : dataHoraValue;
-    const payload = { profissionalId: idProfissional, servicoId: parseInt(idServico), data_hora: dataHoraFormatada, status: "CONFIRMADO" };
+    const payload = { profissionalLogin: loginProfissional, servicoId: parseInt(idServico), data_hora: dataHoraFormatada, status: "CONFIRMADO" };
 
     btn.disabled = true; btn.innerText = 'Aguarde...';
     try {
