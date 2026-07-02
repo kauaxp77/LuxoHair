@@ -2,6 +2,9 @@ package com.example.ProjetoBack.dto.agendamentoDOTs;
 
 import com.example.ProjetoBack.model.Servico;
 import com.example.ProjetoBack.model.user.User;
+import com.example.ProjetoBack.model.Cliente;
+import com.example.ProjetoBack.model.Profissional;
+import com.example.ProjetoBack.model.Servico;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
@@ -13,10 +16,21 @@ import java.time.LocalDateTime;
 @Setter
 public class AgendamentoRequestDTO {
 
-
     private String profissionalLogin;
 
     private Long servicoId;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_profissional")
+    private Profissional profissional;
+
+    @ManyToOne
+    @JoinColumn(name = "id_servico")
+    private Servico servico;
 
     private LocalDateTime data_hora;
 

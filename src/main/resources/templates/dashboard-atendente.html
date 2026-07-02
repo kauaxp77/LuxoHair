@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Liso Luxo Hair • Recepção e Caixa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body class="flex bg-[#f5fbf6] min-h-screen">
+
+  <aside class="w-72 bg-[#dff0e3] p-8">
+    <h1 class="text-4xl font-black text-[#5c9c6d] mb-14">Liso Luxo</h1>
+    <nav class="space-y-4">
+      <div class="bg-[#5c9c6d] text-white p-4 rounded-[20px] font-semibold"><i class="fa-solid fa-border-all mr-3"></i>Visão Global</div>
+      <a href="login.html" class="block bg-white p-4 rounded-[20px] text-gray-600"><i class="fa-solid fa-power-off mr-3"></i>Sair</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-10">
+    <div class="mb-10 flex justify-between items-center">
+      <div>
+        <h1 class="text-5xl font-black text-gray-900">Painel de Recepção</h1>
+        <p class="text-gray-500 mt-1">Gerenciamento sem filtros de privacidade — Controle de todas as cadeiras.</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-100 text-sm">
+        <span class="text-gray-400">Caixa Diário Real:</span> <strong id="caixa-total" class="text-emerald-700">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-[30px] p-10 shadow-sm">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b text-gray-400 text-sm">
+            <th class="pb-4">Cliente</th>
+            <th class="pb-4">Telefone</th>
+            <th class="pb-4">Procedimento</th>
+            <th class="pb-4">Profissional Designado</th>
+            <th class="pb-4">Valor Cobrado</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-atendente" class="text-gray-600">
+          <tr>
+            <td colspan="5" class="text-center py-5 text-gray-400">Buscando fluxo de caixa do PostgreSQL...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="js/atendente.js"></script>
+</body>
+</html>

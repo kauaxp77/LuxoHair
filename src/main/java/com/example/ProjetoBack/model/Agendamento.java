@@ -1,6 +1,5 @@
 package com.example.ProjetoBack.model;
 
-import com.example.ProjetoBack.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,11 +21,11 @@ public class Agendamento {
 
     @ManyToOne
     @JoinColumn(name = "id_cliente")
-    private User cliente;
+    private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "id_profissional")
-    private User profissional;
+    private Profissional profissional;
 
     @ManyToOne
     @JoinColumn(name = "id_servico")
