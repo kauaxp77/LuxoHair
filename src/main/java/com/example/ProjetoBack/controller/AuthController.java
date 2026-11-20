@@ -5,6 +5,7 @@ import com.example.ProjetoBack.dto.authDTOs.LoginResponseDTO;
 import com.example.ProjetoBack.dto.authDTOs.RegisterRequestDTO;
 import com.example.ProjetoBack.infra.security.TokenService;
 import com.example.ProjetoBack.model.user.User;
+import com.example.ProjetoBack.model.user.UserRole;
 import com.example.ProjetoBack.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,9 @@ public class AuthController {
         }
 
         String encrpytedPassword = new BCryptPasswordEncoder().encode(dto.password());
-        User newUser = new User(dto.login(), encrpytedPassword, dto.role());
+        // O cadastro público cria sempre um cliente (USER), mesmo que o pedido envie outro perfil.
+        // Funcionárias e gerentes são cadastrados pelo gerente em POST /gerente/funcionarios.
+        User newUser = new User(dto.login(), encrpytedPassword, UserRole.USER);
         this.repository.save(newUser);
 
         return ResponseEntity.ok().build();

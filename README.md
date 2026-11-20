@@ -49,7 +49,7 @@ via CDN) servidas pela própria aplicação. Depois do login, cada perfil é lev
 | | Recurso | Descrição |
 |---|---|---|
 | 🔐 | **Login com JWT** | `/auth/login` devolve o token e o perfil; a tela redireciona para o painel certo |
-| 👥 | **Três perfis** | `USER` (cliente), `FUNC` (profissional) e `ADMIN` (gerente), com rotas protegidas por perfil |
+| 👥 | **Três perfis** | `USER` (cliente), `FUNC` (profissional) e `ADMIN` (gerente), com rotas protegidas por perfil; só o gerente cria funcionárias e gerentes |
 | 📅 | **Agendamento** | A cliente agenda escolhendo profissional, serviço e data/hora |
 | 💇‍♀️ | **Agenda da profissional** | Cada profissional vê apenas os atendimentos da própria cadeira |
 | 📊 | **Painel do gerente** | Lista a equipe, cadastra funcionárias e mostra todos os agendamentos |
@@ -80,13 +80,13 @@ Todas as rotas, exceto as públicas, exigem o cabeçalho `Authorization: Bearer 
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
 | `POST` | `/auth/login` | público | Recebe `login` e `password`; devolve `token` e `role` |
-| `POST` | `/auth/register` | público | Cria usuário com `login`, `password` e `role` |
+| `POST` | `/auth/register` | público | Cria cliente (`USER`) com `login` e `password`; um `role` enviado é ignorado |
 | `POST` | `/cliente/register` | público | Cria usuário cliente (`USER`) |
 | `POST` | `/cliente/agendamento` | cliente | Agenda com `profissionalLogin`, `servicoId`, `data_hora` e `status` |
 | `GET` | `/cliente/meus-agendamentos` | cliente | Agendamentos da cliente logada |
 | `GET` | `/cliente/profissionais` | cliente | Lista as profissionais |
 | `GET` | `/profissional/meus-agendamentos` | profissional | Agenda da profissional logada |
-| `POST` | `/gerente/funcionarios` | gerente | Cadastra funcionária (`FUNC` por padrão) |
+| `POST` | `/gerente/funcionarios` | gerente | Cadastra funcionária (`FUNC`, padrão) ou outro gerente (`ADMIN`) |
 | `GET` | `/gerente/funcionarios` | gerente | Lista a equipe |
 | `GET` | `/gerente/agendamentos` | gerente | Todos os agendamentos |
 | `POST` | `/servico/novo-servico` | autenticado | Cadastra serviço (`nome_servico`, `duracao_estimada`, `preco`) |
@@ -116,17 +116,25 @@ O documento [`docs/Regras-de-negocio.docx`](docs/Regras-de-negocio.docx) define 
 git clone https://github.com/kauaxp77/LuxoHair.git
 cd LuxoHair
 # Linux/macOS
-DB_PASSWORD=sua_senha JWT_SECRET=um_segredo ./mvnw spring-boot:run
+DB_PASSWORD=sua_senha JWT_SECRET=um_segredo ADMIN_LOGIN=gerente@salao.com ADMIN_PASSWORD=troque-esta-senha ./mvnw spring-boot:run
 # Windows (PowerShell)
-$env:DB_PASSWORD="sua_senha"; $env:JWT_SECRET="um_segredo"; .\mvnw spring-boot:run
+$env:DB_PASSWORD="sua_senha"; $env:JWT_SECRET="um_segredo"; $env:ADMIN_LOGIN="gerente@salao.com"; $env:ADMIN_PASSWORD="troque-esta-senha"; .\mvnw spring-boot:run
 ```
 
-A aplicação sobe em `http://localhost:8081` e o Hibernate cria as tabelas (`ddl-auto=update`). Para ter
-usuários de teste, crie-os pela API, por exemplo:
+| Variável | Para quê |
+|---|---|
+| `DB_PASSWORD` | Senha do usuário `postgres` |
+| `JWT_SECRET` | Segredo de assinatura dos tokens (troque o padrão em produção) |
+| `ADMIN_LOGIN` / `ADMIN_PASSWORD` | Cria o **primeiro gerente** na inicialização, só se ainda não existir nenhum |
+
+A aplicação sobe em `http://localhost:8081` e o Hibernate cria as tabelas (`ddl-auto=update`).
+
+**Perfis:** o cadastro público (`/auth/register`) cria só clientes. Entre com o gerente inicial e cadastre a
+equipe em `POST /gerente/funcionarios`:
 
 ```bash
-curl -X POST http://localhost:8081/auth/register -H "Content-Type: application/json" \
-  -d '{"login":"gerente@teste.com","password":"123","role":"ADMIN"}'
+curl -X POST http://localhost:8081/gerente/funcionarios -H "Authorization: Bearer <token do gerente>" \
+  -H "Content-Type: application/json" -d '{"login":"profissional@salao.com","password":"123","role":"FUNC"}'
 ```
 
 Esse fluxo (cadastro, login de cada perfil, painéis e agendamentos) foi testado com PostgreSQL 16. O teste
