@@ -25,7 +25,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-<<<<<<< HEAD
         var token = this.recoverToken(request);
         if (token != null) {
             var login = tokenService.validateToken(token);
@@ -44,23 +43,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
-=======
-
-        String path = request.getServletPath();
-
-        // LIBERA ROTAS DE AUTENTICAÇÃO
-        if (path.startsWith("/auth/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        var token = this.recoverToken(request);
-        if (token != null){
-            var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByLogin(login);
-            var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
->>>>>>> 920d891ebec45e5918a1e1175123614d2b6218a7
         }
         filterChain.doFilter(request, response);
     }
@@ -70,7 +52,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         if(authHeader == null) return null;
         return authHeader.replace("Bearer ", "");
     }
-<<<<<<< HEAD
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -84,6 +65,4 @@ public class SecurityFilter extends OncePerRequestFilter {
                 || path.startsWith("/js/")
                 || path.startsWith("/images/");
     }
-=======
->>>>>>> 920d891ebec45e5918a1e1175123614d2b6218a7
 }

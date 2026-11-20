@@ -21,6 +21,7 @@
 <p align="center">
   <a href="#-sobre-o-projeto">Sobre</a> •
   <a href="#-funcionalidades">Funcionalidades</a> •
+  <a href="#️-telas">Telas</a> •
   <a href="#-endpoints-da-api">Endpoints</a> •
   <a href="#-regras-de-negócio">Regras de negócio</a> •
   <a href="#-como-executar">Como executar</a> •
@@ -32,67 +33,66 @@
 ## 📌 Sobre o projeto
 
 O objetivo é substituir a agenda de papel do salão por um sistema de agendamentos online: a cliente escolhe o
-serviço e o horário, a profissional vê a sua agenda e a gerência acompanha todos os atendimentos e cadastra a equipe.
+serviço, a profissional e o horário; a profissional vê só a própria agenda; e a gerência cadastra a equipe e
+acompanha todos os atendimentos.
 
 A aplicação segue o padrão em camadas do Spring (`controller` → `Service` → `repository` → `model`), usa
-**Spring Data JPA** com **PostgreSQL** e tem as telas em HTML (Thymeleaf + Tailwind via CDN) servidas pela própria
-aplicação.
+**Spring Data JPA** com **PostgreSQL**, autenticação **stateless com JWT** e telas em HTML (Thymeleaf + Tailwind
+via CDN) servidas pela própria aplicação. Depois do login, cada perfil é levado ao seu painel.
 
-> 🚧 **Projeto em desenvolvimento.** Hoje o `mvn package` **não compila**: algumas classes e templates ainda têm
-> **marcadores de conflito de merge** (`<<<<<<<`, `=======`, `>>>>>>>`) e a biblioteca de JWT usada pelo
-> `TokenService` (`com.auth0:java-jwt`) ainda não foi declarada no `pom.xml`. As regras de negócio do documento
-> [`docs/Regras-de-negocio.docx`](docs/Regras-de-negocio.docx) são o planejamento do sistema e ainda não estão
-> implementadas no código.
+> 🚧 **Em desenvolvimento.** Os agendamentos ainda não trazem o preço do serviço, então os valores financeiros dos
+> painéis (preço bruto, faturamento e comissões) aparecem zerados. As regras de negócio do documento
+> [`docs/Regras-de-negocio.docx`](docs/Regras-de-negocio.docx) são o planejamento e ainda não estão implementadas.
 
 ## ✨ Funcionalidades
 
 | | Recurso | Descrição |
 |---|---|---|
-| 👤 | **Clientes** | Cadastro e listagem de clientes (nome, telefone e e-mail) |
-| 💇 | **Profissionais** | Cadastro e listagem de profissionais e suas especialidades |
-| ✂️ | **Serviços** | Cadastro de serviços com duração estimada e preço |
-| 📅 | **Agendamentos** | Liga cliente, profissional, serviço, data/hora e status |
-| 🔐 | **Autenticação JWT** | Tokens assinados com HMAC256 e validade de 2 horas (`TokenService`) |
-| 🧑‍💼 | **Perfis de acesso** | `ADMIN`, `FUNC` (profissional) e `USER` (cliente) |
-| 🖥️ | **Telas por perfil** | Página inicial, login, área da cliente, área técnica, recepção e painel do gerente |
+| 🔐 | **Login com JWT** | `/auth/login` devolve o token e o perfil; a tela redireciona para o painel certo |
+| 👥 | **Três perfis** | `USER` (cliente), `FUNC` (profissional) e `ADMIN` (gerente), com rotas protegidas por perfil |
+| 📅 | **Agendamento** | A cliente agenda escolhendo profissional, serviço e data/hora |
+| 💇‍♀️ | **Agenda da profissional** | Cada profissional vê apenas os atendimentos da própria cadeira |
+| 📊 | **Painel do gerente** | Lista a equipe, cadastra funcionárias e mostra todos os agendamentos |
+| ✂️ | **Serviços** | Cadastro e listagem de serviços com duração e preço |
 | 🐳 | **Docker** | `Dockerfile` multi-stage e `docker-compose.yml` com PostgreSQL |
+
+## 🖼️ Telas
+
+<table>
+  <tr>
+    <td align="center"><b>Início</b><br><img src="docs/screenshots/inicio.png" alt="Página inicial"></td>
+    <td align="center"><b>Login</b><br><img src="docs/screenshots/login.png" alt="Login"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Painel da cliente</b><br><img src="docs/screenshots/cliente.png" alt="Painel da cliente"></td>
+    <td align="center"><b>Agenda da profissional</b><br><img src="docs/screenshots/funcionaria.png" alt="Agenda da profissional"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Painel do gerente</b><br><img src="docs/screenshots/gerente.png" alt="Painel do gerente"></td>
+    <td align="center"><b>Celular</b><br><img src="docs/screenshots/mobile.png" alt="Versão para celular" width="260"></td>
+  </tr>
+</table>
 
 ## 🔌 Endpoints da API
 
-### Admin (`/admin`)
-* **`GET /admin/clientes`**: lista todos os clientes.
-* **`POST /admin/clientes`**: cadastra um novo cliente.
-* **`GET /admin/servicos`**: lista todos os serviços.
-* **`POST /admin/servicos`**: cadastra um novo serviço.
+Todas as rotas, exceto as públicas, exigem o cabeçalho `Authorization: Bearer <token>`.
 
-### Gerente (`/gerente`)
-* **`POST /gerente/funcionarios`**: cadastra um usuário da equipe com a role enviada (`FUNC` por padrão).
-* **`GET /gerente/funcionarios`**: lista os usuários com role `FUNC`.
-* **`GET /gerente/agendamentos`**: lista todos os agendamentos (visão do gerente).
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| `POST` | `/auth/login` | público | Recebe `login` e `password`; devolve `token` e `role` |
+| `POST` | `/auth/register` | público | Cria usuário com `login`, `password` e `role` |
+| `POST` | `/cliente/register` | público | Cria usuário cliente (`USER`) |
+| `POST` | `/cliente/agendamento` | cliente | Agenda com `profissionalLogin`, `servicoId`, `data_hora` e `status` |
+| `GET` | `/cliente/meus-agendamentos` | cliente | Agendamentos da cliente logada |
+| `GET` | `/cliente/profissionais` | cliente | Lista as profissionais |
+| `GET` | `/profissional/meus-agendamentos` | profissional | Agenda da profissional logada |
+| `POST` | `/gerente/funcionarios` | gerente | Cadastra funcionária (`FUNC` por padrão) |
+| `GET` | `/gerente/funcionarios` | gerente | Lista a equipe |
+| `GET` | `/gerente/agendamentos` | gerente | Todos os agendamentos |
+| `POST` | `/servico/novo-servico` | autenticado | Cadastra serviço (`nome_servico`, `duracao_estimada`, `preco`) |
+| `GET` | `/servico/listar` | autenticado | Lista os serviços |
 
-### Agendamentos (`/agendamentos`)
-* **`GET /agendamentos`**: lista todos os agendamentos.
-* **`POST /agendamentos`**: cria um agendamento (cliente, profissional, serviço e data/hora).
-
-### Clientes, profissionais e serviços
-* **`GET` / `POST /clientes`**: lista e cadastra clientes.
-* **`GET` / `POST /profissionais`**: lista e cadastra profissionais.
-* **`GET` / `POST /servicos`**: lista e cadastra serviços.
-
-### Telas (views)
-
-| Rota | Template |
-|---|---|
-| `/` | `index.html` (página inicial do salão) |
-| `/login` | `login.html` |
-| `/cliente` | `cliente.html` (meus agendamentos) |
-| `/funcionario` | `dashboard-funcionaria.html` (área técnica) |
-| `/gerente` | `dashboard-gerente.html` (painel do gerente) |
-| `/dashboard` | `dashboard.html` |
-
-### Próximos passos (TODOs mapeados no código)
-* Fazer o `AgendamentoController` receber e devolver DTOs em vez das entidades.
-* Permitir que a cliente veja apenas os próprios agendamentos.
+Telas: `/`, `/login`, `/cliente`, `/funcionario` e `/gerente`.
 
 ## 📋 Regras de negócio
 
@@ -107,35 +107,39 @@ O documento [`docs/Regras-de-negocio.docx`](docs/Regras-de-negocio.docx) define 
 
 ## 🚀 Como executar
 
-> ⚠️ Estes são os comandos indicados pelos arquivos do projeto (`Dockerfile`, `docker-compose.yml` e
-> `application.properties`). Eles **não foram executados com sucesso** nesta revisão, porque a compilação falha
-> pelos motivos citados em [Sobre o projeto](#-sobre-o-projeto).
+**Pré-requisitos:** JDK 21 e um PostgreSQL com o banco `agendamentos_db` (usuário `postgres`). O Maven Wrapper
+(`mvnw`) já vem no projeto.
 
-**Pré-requisitos:** JDK 21 e Maven (ou o `mvnw` incluso) com um PostgreSQL, ou então o Docker.
-
-### Com Docker Compose (aplicação + PostgreSQL)
+### Localmente
 
 ```bash
 git clone https://github.com/kauaxp77/LuxoHair.git
 cd LuxoHair
+# Linux/macOS
+DB_PASSWORD=sua_senha JWT_SECRET=um_segredo ./mvnw spring-boot:run
+# Windows (PowerShell)
+$env:DB_PASSWORD="sua_senha"; $env:JWT_SECRET="um_segredo"; .\mvnw spring-boot:run
+```
+
+A aplicação sobe em `http://localhost:8081` e o Hibernate cria as tabelas (`ddl-auto=update`). Para ter
+usuários de teste, crie-os pela API, por exemplo:
+
+```bash
+curl -X POST http://localhost:8081/auth/register -H "Content-Type: application/json" \
+  -d '{"login":"gerente@teste.com","password":"123","role":"ADMIN"}'
+```
+
+Esse fluxo (cadastro, login de cada perfil, painéis e agendamentos) foi testado com PostgreSQL 16. O teste
+automatizado (`./mvnw test`) também precisa do banco disponível.
+
+### Com Docker Compose (aplicação + PostgreSQL)
+
+```bash
 docker compose up -d --build
 ```
 
-A aplicação fica em `http://localhost:8082` e o PostgreSQL na porta `5432` (banco `agendamentos_db`).
-
-### Localmente
-
-1. Crie o banco `agendamentos_db` no PostgreSQL e ajuste usuário e senha em
-   `src/main/resources/application.properties`.
-2. Defina a propriedade `api.security.token.secret`, usada pelo `TokenService` para assinar os tokens JWT
-   (por exemplo, com a variável de ambiente `API_SECURITY_TOKEN_SECRET`).
-3. Rode:
-
-```bash
-./mvnw spring-boot:run
-```
-
-A aplicação sobe na porta `8081`. As tabelas são criadas pelo Hibernate (`ddl-auto=update`).
+A aplicação fica em `http://localhost:8082` e o PostgreSQL na porta `5432`. Esse caminho segue os arquivos do
+projeto, mas não foi testado nesta revisão.
 
 ## 📁 Estrutura do projeto
 
@@ -145,16 +149,17 @@ LuxoHair/
 │   ├── controller/          # Endpoints REST e controllers das telas
 │   ├── Service/             # Regras de negócio
 │   ├── repository/          # Spring Data JPA
-│   ├── model/               # Entidades: Agendamento, Cliente, Profissional, Servico e User
+│   ├── model/               # Entidades: Agendamento, Servico e User (com o perfil em UserRole)
 │   ├── dto/                 # DTOs de requisição e resposta
 │   ├── infra/security/      # JWT: TokenService, SecurityFilter e SecurityConfiguration
-│   └── config/              # Configurações web e de segurança
 ├── src/main/resources/
-│   ├── templates/           # Telas HTML (Thymeleaf)
-│   ├── static/              # JavaScript das telas
+│   ├── templates/           # Telas HTML (Thymeleaf), com o JavaScript embutido
+│   │   └── standby/         # Telas antigas fora de uso
+│   ├── static/              # Scripts de uma versão anterior (as telas atuais não os usam)
 │   └── application.properties
 ├── docs/
 │   ├── Regras-de-negocio.docx  # Regras de negócio planejadas
+│   ├── screenshots/            # Prints das telas
 │   └── banner.png
 ├── Dockerfile               # Build multi-stage (Maven + JDK 21)
 ├── docker-compose.yml       # Aplicação + PostgreSQL 15
@@ -172,6 +177,6 @@ LuxoHair/
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **[kauaxp77](https://github.com/kauaxp77)**
+Desenvolvido por **[kauaxp77](https://github.com/kauaxp77)** e equipe
 
 <p align="center">⭐ Se curtiu o projeto, deixe uma estrela!</p>
