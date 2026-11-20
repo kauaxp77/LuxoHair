@@ -36,3 +36,6 @@ build/
 *.log
 .DS_Store
 Thumbs.db
+
+### Variáveis de ambiente locais ###
+.env

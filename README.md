@@ -142,12 +142,18 @@ automatizado (`./mvnw test`) também precisa do banco disponível.
 
 ### Com Docker Compose (aplicação + PostgreSQL)
 
+Crie o arquivo `.env` a partir do modelo e preencha `JWT_SECRET`, `ADMIN_LOGIN` e `ADMIN_PASSWORD`:
+
 ```bash
+cp .env.example .env      # no Windows: copy .env.example .env
 docker compose up -d --build
 ```
 
-A aplicação fica em `http://localhost:8082` e o PostgreSQL na porta `5432`. Esse caminho segue os arquivos do
-projeto, mas não foi testado nesta revisão.
+A aplicação fica em `http://localhost:8082` e o PostgreSQL na porta `5432`. Sem `JWT_SECRET` o Compose se recusa a
+subir, para não usar o segredo padrão do código. O `.env` está no `.gitignore` e não vai para o GitHub.
+
+> A configuração do Compose foi validada com `docker compose config`; a subida dos containers não foi testada
+> nesta revisão.
 
 ## 📁 Estrutura do projeto
 
@@ -171,6 +177,7 @@ LuxoHair/
 │   └── banner.png
 ├── Dockerfile               # Build multi-stage (Maven + JDK 21)
 ├── docker-compose.yml       # Aplicação + PostgreSQL 15
+├── .env.example             # Modelo das variáveis do Compose (copie para .env)
 └── pom.xml
 ```
 

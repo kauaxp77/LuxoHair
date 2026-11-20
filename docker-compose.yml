@@ -32,6 +32,11 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       # Informa ao Spring para rodar na porta 8081 DENTRO do container
       SERVER_PORT: 8081
+      # Segredo dos tokens JWT e primeiro gerente (ADMIN), lidos do arquivo .env (veja .env.example).
+      # Sem JWT_SECRET o Compose não sobe, para não usar o segredo padrão que está no código.
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      ADMIN_LOGIN: ${ADMIN_LOGIN:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
 
 # Volume para os dados do banco não sumirem quando o container desligar
 volumes:
